@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <title> colours~ </title>
+        <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Color_circle_%28hue-sat%29.png/310px-Color_circle_%28hue-sat%29.png" type="image/icon type">
+        <style>
+            .color {
+                color: #fff;
+                font-size: 4rem;
+                font-weight: 400;
+                text-align: center;
+            }
+
+            .text {
+                font-weight: 400;
+                color: #000;
+                font-size: 2rem;
+                line-height: 1.5;
+                text-align: center;
+                background-color: white;
+                margin: 0;
+            }
+
+            .black {
+                background-color: black;
+            }
+        </style>
+    </head>
+
+    <body class="black">
+        <p class="text">Press a key to change background</p>
+        <p id="rgb" class="color"> RGB: rgb(0,0,0) </p>
+        <p id="hex" class="color"> HEX: #000000 </p>
+        <p id="cmyk" class="color"> CMYK: C=0%, M=0%, Y=0%, K=100% </p>
+        <script>
+            let body = document.querySelector('body');
+
+            function randomcolor() {
+                return Math.floor(Math.random() * 255);
+            }
+
+            function rgbToHex(red, green, blue) {
+                // Convert each component to its hexadecimal representation
+                const redHex = red.toString(16).padStart(2, '0');
+                const greenHex = green.toString(16).padStart(2, '0');
+                const blueHex = blue.toString(16).padStart(2, '0');
+
+                // Concatenate the hexadecimal values to create the final hex color code
+                const hexColor = `#${redHex}${greenHex}${blueHex}`;
+
+                return hexColor;
+            }
+
+            function rgbToCmy(r, g, b) {
+                r = r / 255;
+                g = g / 255;
+                b = b / 255;
+
+                const c = Math.round((1 - r) * 100);
+                const m = Math.round((1 - g) * 100);
+                const y = Math.round((1 - b) * 100);
+
+                return [c, m, y];
+            }
+
+            function rgbToCmyk(r, g, b) {
+                // Normalize RGB values to the range [0, 1]
+                r = r / 255;
+                g = g / 255;
+                b = b / 255;
+
+                // Find the maximum of the RGB components
+                const max = Math.max(r, g, b);
+
+                // Calculate the K (Key/Black) component
+                const k = 1 - max;
+
+                // If K is 1 (max is 0), the color is black, and the C, M, and Y components are 0.
+                if (k === 1) {
+                    return [0, 0, 0, 100];
+                }
+                // Calculate the C (Cyan), M (Magenta), and Y (Yellow) components
+                const c = Math.round(((1 - r - k) / (1 - k)) * 100);
+                const m = Math.round(((1 - g - k) / (1 - k)) * 100);
+                const y = Math.round(((1 - b - k) / (1 - k)) * 100);
+                l = Math.round(k * 100);
+
+                return [c, m, y, l];
+            }
+
+            body.addEventListener('keypress', function() {
+                r = randomcolor();
+                g = randomcolor();
+                b = randomcolor();
+                body.style.backgroundColor = 'rgb(' + r + ',' + g + ',' + b + '\)';
+                document.querySelector('#rgb').innerHTML = `RGB: ${body.style.backgroundColor}`;
+                hexColor = rgbToHex(r, g, b).toUpperCase();
+                document.querySelector('#hex').innerHTML = `HEX: ${hexColor}`;
+                cmyk = rgbToCmyk(r, g, b);
+                document.querySelector('#cmyk').innerHTML = `CMYK: C=${cmyk[0]}%, M=${cmyk[1]}%, Y=${cmyk[2]}%, K=${cmyk[3]}%`;
+            })
+        </script>
+    </body>
+
+</html>
