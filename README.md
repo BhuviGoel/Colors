@@ -1,2 +1,2 @@
-# Colors
-Color Changing Webpage
+# colors
+color changing webpage
